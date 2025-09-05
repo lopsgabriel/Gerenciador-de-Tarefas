@@ -31,7 +31,7 @@ export const excluirTarefa = createAsyncThunk('tarefas/excluir', async (id, { ge
   const token = getToken(getState());
   if (!token) throw new Error('Sem token (faça login novamente).');
   await apiRequest(`tarefas/${id}`, { token, method: 'DELETE' });
-  return id; // <- importantíssimo: retornar o id para o reducer
+  return id;
 });
 
 const tasksSlice = createSlice({
@@ -45,7 +45,7 @@ const tasksSlice = createSlice({
       .addCase(listarTarefas.fulfilled, (state, action) => { state.carregando = false; state.itens = action.payload; })
       .addCase(listarTarefas.rejected, (state, action) => { state.carregando = false; state.erro = action.error.message; })
 
-      // BUSCAR (não sobrescreve a lista inteira)
+      // BUSCAR
       .addCase(buscarTarefa.fulfilled, (state, action) => { state.selecionada = action.payload; })
 
       // CRIAR

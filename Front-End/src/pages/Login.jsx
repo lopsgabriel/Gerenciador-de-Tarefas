@@ -18,7 +18,7 @@ export default function Login() {
       // console.log('resposta login', resposta);
       const token = typeof resposta === 'string' ? resposta : resposta?.token;
       if (!token) throw new Error('Servidor não retornou token.');
-      dispatch(login(token));                  // <- SALVA APENAS O TOKEN
+      dispatch(login(token));
       navigate('/');
     } catch (err) {
       setErro(err.message);
