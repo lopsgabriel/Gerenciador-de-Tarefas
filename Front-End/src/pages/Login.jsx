@@ -28,19 +28,19 @@ export default function Login() {
   return (
     <div className='layout-root'>
       <div className='layout-container'>
-        <span className='titulo-form'> Login </span>
+        <span className='form-title'> Login </span>
         <form 
           onSubmit={aoEnviar} 
           className='login-form'
         >
-          <p className='Nome-tarefa-form text-center'> Insira a senha de acesso </p>
+          <p className='input input--title text-center'> Insira a senha de acesso </p>
           <input 
-          className='senha-input'
+          className='input input--password'
           type="password" 
           placeholder='Senha'
           value={senha} 
           onChange={e=>setSenha(e.target.value)} />
-          <button  type="submit" className='button'>Entrar</button>
+          <button  type="submit" className='btn btn--primary'>Entrar</button>
           {erro && <p style={{color:'tomato'}}>{erro}</p>}
         </form>
       </div>

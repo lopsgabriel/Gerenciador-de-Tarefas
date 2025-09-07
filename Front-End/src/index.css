@@ -1,229 +1,219 @@
 @import "tailwindcss";
+
+/* =========================
+   Tokens
+   ========================= */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --ff-sans: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+  --clr-page-bg: #242424;
+  --clr-text: rgb(57 57 68);
+  --clr-primary: rgb(36 90 192);
+  --clr-primary-hover: rgb(32 80 168);
+  --clr-accent-50: rgb(254 252 232);
+  --clr-accent-100: rgb(254 249 195);
+  --clr-card-bg: rgb(255 249 228);
+  --clr-card-bg-alt: rgb(255 250 236);
+
+  --radius: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-button{
-  border-radius: 0.75rem;
+/* Base */
+html, body { color: rgba(255,255,255,0.87); background: var(--clr-page-bg); }
+h1 { font-size: 3.2em; line-height: 1.1; }
+button { font-family: var(--ff-sans); }
+
+/* =========================
+   Botões
+   ========================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border-radius: var(--radius);
+  margin-bottom: 0.2rem;
   padding: 0.6em 1.2em;
-  font-size: 1.0em;
+  font-size: 1rem;
   font-weight: 600;
-  font-family: inherit;
   cursor: pointer;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  transition: background-color .2s ease-in-out, box-shadow .2s ease-in-out;
 }
 
-.button {
-  background-color: rgb(36, 90, 192); 
-  color: white;
-  cursor: pointer;
-  border-radius: 0.75rem;
-  margin-bottom: 5px;
-  transition: background-color 0.2s ease-in-out;
+.btn--primary {
+  background: var(--clr-primary);
+  color: #fff;
 }
-.button.disabled {
-  opacity: 0.6;
+.btn--primary:hover { background: var(--clr-primary-hover); }
+
+.btn--card {
+  background: var(--clr-accent-50);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+}
+.btn--card:hover { background: rgba(236,236,213,0.52); }
+
+.is-danger { color: #dc2929; }
+.is-danger:hover { background: rgba(238,199,199,0.32); }
+
+.btn:disabled,
+.btn.is-disabled {
+  opacity: .6;
   cursor: not-allowed;
 }
-.button:hover{
-  background-color: rgb(32, 80, 168); 
-}
-.button-card {
+
+/* =========================
+   Inputs
+   ========================= */
+.input {
+  border: none;
+  outline: none;
   border-radius: 0.75rem;
-  background-color: rgb(254, 252, 232);
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.15); 
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-.button-card:hover {
-  background-color: rgba(236, 236, 213, 0.524); 
-}
-.button-card.delete{
-  color: #dc2929;
-}
-.button-card.delete:hover{
-  background-color: rgba(238, 199, 199, 0.321);
+  font-weight: 600;
+  font-family: var(--ff-sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif);
+  color: #645947;
+  background: rgb(255, 249, 228);
 }
 
-.titulo-form {
-  font-weight: 800;
-  font-size: 2.0rem;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  color:#796c58;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+/* Equivalente ao .Nome-tarefa-form */
+.input--title {
+  width: 60%;
+  font-size: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
 }
-.Nome-tarefa-form {
-  width: 60%; 
-  border-radius: 0.75rem;
-  font-size: 1.5rem; 
-  font-weight: 600; 
-  color: #645947; 
-  padding: 0.5rem; 
-  padding-left: 0.75rem;
-  outline: none;
-  margin-bottom: 0.5rem; 
-  background-color: rgb(255, 249, 228);
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-.Nome-tarefa-form.em-edicao {
+
+/* Equivalente ao .Nome-tarefa-form.em-edicao */
+.input--title.is-editing {
+  width: 100%;
   font-size: 0.9rem;
   color: #796c58;
-  width: 100%;
+  background: rgb(255, 250, 236);
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.136);
-  background-color: rgb(255, 250, 236);
 }
 
-.card-scroll::-webkit-scrollbar { width: 8px;}
-.card-scroll::-webkit-scrollbar-track { background: #a3b2d4; border-radius: 6px;  }
-.card-scroll::-webkit-scrollbar-thumb { background: #6b89ce; border-radius: 6px; }
-.card-scroll::-webkit-scrollbar-thumb:hover { background: #5c86ff; }
-.card-tarefas {
-  background-color: rgb(255, 249, 228);
-  border-bottom: 4px solid rgb(36, 90, 192);
-  border-radius: 0.75rem;
+.input--search {
+  width: 90%;
+  margin: .5rem 0 1.3rem;
+  padding: .3rem .75rem .3rem 30px; /* espaço pro ícone à esquerda */
+  font-size: .9rem;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.136);
+}
+
+.input--password {
+  width: 50%;
+  padding: .5rem 0 .5rem 10px;
+  background: rgba(255,252,243,0.856);
+}
+.input--password:focus { box-shadow: none; transition: all .6s ease-in-out; }
+
+/* =========================
+   Cards
+   ========================= */
+.card {
+  background: var(--clr-card-bg);
+  border-bottom: 4px solid var(--clr-primary);
+  border-radius: var(--radius);
   padding: 1rem;
-  font-size: 1em;
   color: #796c58;
   font-weight: 600;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: var(--ff-sans);
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(8px);
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  transition: all 0.2s ease-out;
-}
-.card-tarefas.em-edicao {
-  height: 20rem;
-}
-.card-tarefas {
+  box-shadow: var(--shadow-xs);
+  transition: all .2s ease-out;
   height: 12rem;
 }
-.card-nome {
+.card--editing { height: 20rem; }
+
+.card__name {
   font-size: 1.2rem;
   font-weight: 600;
-  color: rgb(57, 57, 68);
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: var(--clr-text);
+  font-family: var(--ff-sans);
 }
-.card-descricao {
-  opacity: 0.85;
-  font-size: 0.875rem;
+.card__desc {
+  opacity: .85;
+  font-size: .875rem;
   font-weight: 600;
-  color: rgb(57, 57, 68);
+  color: var(--clr-text);
   overflow: hidden;
   display: -webkit-box;
-  display: box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
   -webkit-box-orient: vertical;
-  box-orient: vertical;
   text-overflow: ellipsis;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: var(--ff-sans);
 }
 
-.header-tarefas {
-  position: sticky; 
-  top: 0;
-  z-index: 10;
+/* Scroll da área de edição */
+.card-scroll::-webkit-scrollbar { width: 8px; }
+.card-scroll::-webkit-scrollbar-track { background: #a3b2d4; border-radius: 6px; }
+.card-scroll::-webkit-scrollbar-thumb { background: #6b89ce; border-radius: 6px; }
+.card-scroll::-webkit-scrollbar-thumb:hover { background: #5c86ff; }
+
+/* =========================
+   Header
+   ========================= */
+.app-header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--clr-primary);
   backdrop-filter: blur(6px);
-  background: rgb(36, 90, 192);
+  transition: background .2s ease-in-out;
 }
-.header-tarefas:hover{
-  background: rgb(40, 94, 195);
-  transition: all 0.2s ease-in-out;
-}
-.header-conteudo {
+.app-header:hover { background: rgb(40 94 195); }
+
+.app-header__content {
   margin: 0 auto;
   padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.header-acoes {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.header-titulo {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-.header-botao {
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+.app-header__actions { display: flex; align-items: center; gap: 12px; }
+.app-header__title { margin: 0; font-size: 1.25rem; font-weight: 700; }
+.app-header__button { padding: 6px 10px; border-radius: 8px; cursor: pointer; }
 
+/* =========================
+   Layout
+   ========================= */
 .layout-root {
   width: 100%;
   min-height: 100vh;
-  background-color: rgb(254, 252, 232);
-  padding-top: 1rem; 
-  display: flex;
-  justify-content: center;
+  background: var(--clr-accent-50);
+  padding-top: 1rem;
+  display: flex; justify-content: center;
 }
 .layout-container {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
 }
 .layout-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 50%; /* w-2/4 */
+  display: flex; flex-direction: column; align-items: center;
+  width: 50%;
 }
 
+/* =========================
+   Forms
+   ========================= */
 .login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  background-color: rgba(255, 247, 220, 0.856);
-  border-bottom: 3px solid rgb(36, 90, 192);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  padding-top: 2rem; 
-  padding-bottom: 2rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  background: rgba(255,247,220,.856);
+  border-bottom: 3px solid var(--clr-primary);
+  border-radius: var(--radius);
+  padding: 2rem 1rem;
   width: 40%;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+  box-shadow: var(--shadow-sm);
 }
-.login-form:hover{
-  border-bottom: 3px solid rgb(56, 121, 243);
+.login-form:hover {
+  border-bottom-color: rgb(56 121 243);
   box-shadow: 0 2px 3px 0 rgb(0 0 0 / 0.25);
-  transition: all 0.6s ease-in-out
+  transition: all .6s ease-in-out;
 }
-.senha-input {
-  border-radius: 0.75rem;
-  border: none;
-  padding-left: 10px; 
-  padding-top: 0.5rem; 
-  padding-bottom: 0.5rem;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.15);             
-  color: black;             
-  width: 50%;               
-  outline: none;
-  font-weight: 600;
-  background-color: rgba(255, 252, 243, 0.856);
-}
-.senha-input:focus {
-  transition: all 0.6s ease-in-out;
-  outline: none;
-  box-shadow: none;
+.form-title {
+  font-weight: 800;
+  font-size: 2rem;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  color: #796c58;
+  font-family: var(--ff-sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif);
 }

@@ -23,9 +23,7 @@ export async function apiRequest(path, { method = 'GET', body, token } = {}) {
       const data = await resp.json();
       mensagem = data.erro || data.error || data.message || mensagem;
     } catch {
-      try { mensagem = await resp.text(); } catch {
-        // eslint-disable-next-line no-empty
-      }
+      try { mensagem = await resp.text(); } catch { /* empty */ }
     }
     throw new Error(mensagem);
   }

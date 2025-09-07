@@ -49,7 +49,7 @@ export default function Tarefas(){
       <div className='layout-root'>
         <div className='layout-container'>
           <section className='layout-section'>
-            <h3 className='titulo-form'>Nova tarefa</h3>
+            <h3 className='form-title'>Nova tarefa</h3>
             <FormTarefa onSave={criar} />
           </section>
           <div className='w-5/12 items-center justify-center flex relative'>
@@ -57,7 +57,7 @@ export default function Tarefas(){
             <input
               type="text"
               placeholder="Pesquisar..."
-              className="input-busca"
+              className="input input--search"
               onChange={(e) => setPesquisa(e.target.value)}
             />
           </div>
@@ -67,7 +67,7 @@ export default function Tarefas(){
               return (
                 <li
                   key={t.id}
-                  className={`card-tarefas ${emEdicao ? 'em-edicao' : ''}`}
+                  className={`card ${emEdicao ? 'card--editing' : ''}`}
                 >
                   {emEdicao ? (
                     <div className="flex-1 overflow-auto card-scroll">
@@ -80,16 +80,16 @@ export default function Tarefas(){
                   ) : (
                     <>
                       <div className="flex-1 overflow-hidden">
-                        <strong className="card-nome">{t.nome}</strong>
-                        <p className="card-descricao">
+                        <strong className="card__name">{t.nome}</strong>
+                        <p className="card_desc">
                           {t.descricao}
                         </p>
                       </div>
                       <div className="mt-3 flex gap-2">
-                        <button className="button-card" onClick={() => setEditando(t)}>
+                        <button className="btn btn--card" onClick={() => setEditando(t)}>
                           <MdEdit />
                         </button>
-                        <button className="button-card delete" onClick={() => excluir(t.id)}>
+                        <button className="btn btn--card is-danger" onClick={() => excluir(t.id)}>
                           <MdDelete />
                         </button>
                       </div>
