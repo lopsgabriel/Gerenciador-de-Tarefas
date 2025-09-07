@@ -1,16 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { excluirTarefa, listarTarefas, atualizarTarefa, criarTarefa } from '../redux/tasksSlice';
 import { logout } from '../redux/authSlice';
+import { fuzzyMatch, norm } from '../components/FuzzyMatch';
 import FormTarefa from '../components/FormTarefa';
 import HeaderTarefas from '../components/HeaderTarefas';
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import { MdSearch } from "react-icons/md";
 
 export default function Tarefas(){
   const dispatch = useDispatch();
-  const { itens, carregando, erro } = useSelector(e => e.tarefas);
+  const { itens } = useSelector(e => e.tarefas);
   const [editando, setEditando] = useState(null);
+  const [pesquisa, setPesquisa] = useState('');
+
+  const itensFiltrados = useMemo(() => {
+  const q = norm(pesquisa).trim();
+  if (!q) return itens; // 👉 sem pesquisa = retorna todos
+  const termos = q.split(/\s+/).filter(Boolean);
+  return itens.filter(t => {
+    const alvo = `${t.nome ?? ''} ${t.descricao ?? ''}`;
+    return termos.every(term => fuzzyMatch(term, alvo));
+  });
+}, [itens, pesquisa]);
 
   useEffect(() => {
     dispatch(listarTarefas());
@@ -39,25 +52,30 @@ export default function Tarefas(){
             <h3 className='titulo-form'>Nova tarefa</h3>
             <FormTarefa onSave={criar} />
           </section>
-          {carregando && <p>Carregando…</p>}
-          {erro && <p style={{ color: 'tomato' }}>{erro}</p>}
-
+          <div className='w-5/12 items-center justify-center flex relative'>
+              <MdSearch size={18} color="#796c58" className='absolute left-8.5 top-4 pointer-events-none'/>
+            <input
+              type="text"
+              placeholder="Pesquisar..."
+              className="input-busca"
+              onChange={(e) => setPesquisa(e.target.value)}
+            />
+          </div>
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-10/12 pb-10">
-            {itens.map(t => {
+            {itensFiltrados.map(t => {
               const emEdicao = editando?.id === t.id;
               return (
                 <li
                   key={t.id}
                   className={`card-tarefas ${emEdicao ? 'em-edicao' : ''}`}
                 >
-                  
                   {emEdicao ? (
                     <div className="flex-1 overflow-auto card-scroll">
                       <FormTarefa 
-                      inicial={t}
-                       onSave={atualizar} 
-                       onCancel={() => setEditando(null)}
-                       modo='edicao' />
+                        inicial={t}
+                        onSave={atualizar} 
+                        onCancel={() => setEditando(null)}
+                        modo='edicao' />
                     </div>
                   ) : (
                     <>
