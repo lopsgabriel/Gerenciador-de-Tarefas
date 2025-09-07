@@ -19,10 +19,12 @@ export default function FormTarefa({ inicial = null, onSave, onCancel, modo='cri
   }
 
   useEffect(() => {
-    autoAjustarTextarea();         // ajusta ao montar/alterar descrição
+    autoAjustarTextarea();
   }, [descricao, modo]);
 
   function enviar(e) {
+    setDescricao('')
+    setNome('')
     e.preventDefault();
     onSave({ nome, descricao });
   }
@@ -46,7 +48,12 @@ export default function FormTarefa({ inicial = null, onSave, onCancel, modo='cri
         onInput={(e) => autoAjustarTextarea(e.target)}
       />
       <div style={{ display: 'flex', gap: 8 }}>
-        <button className="button shadow-sm" type="submit"> {modo === 'edicao' ? 'Salvar' : 'Criar tarefa'}</button>
+        <button 
+          className={`button shadow-sm ${nome ? '' : 'disabled' } `}
+          type="submit"
+        > 
+          {modo === 'edicao' ? 'Salvar' : 'Criar tarefa'}
+        </button>
         {onCancel && <button type="button" onClick={onCancel}>Cancelar</button>}
       </div>
     </form>
