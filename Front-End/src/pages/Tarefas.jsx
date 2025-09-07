@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { excluirTarefa, listarTarefas, atualizarTarefa, criarTarefa } from '../redux/tasksSlice';
 import { logout } from '../redux/authSlice';
 import FormTarefa from '../components/FormTarefa';
+import HeaderTarefas from '../components/HeaderTarefas';
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 export default function Tarefas(){
   const dispatch = useDispatch();
@@ -28,38 +31,58 @@ export default function Tarefas(){
   }
 
   return(
-    <div style={{ maxWidth: 720, margin: '40px auto', display: 'grid', gap: 16 }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <h1>Tarefas</h1>
-        <button onClick={() => dispatch(logout())}>Sair</button>
-      </header>
+    <>
+      <HeaderTarefas logout={() => dispatch(logout())} />
+      <div className='layout-root'>
+        <div className='layout-container'>
+          <section className='layout-section'>
+            <h3 className='titulo-form'>Nova tarefa</h3>
+            <FormTarefa onSave={criar} />
+          </section>
+          {carregando && <p>Carregando…</p>}
+          {erro && <p style={{ color: 'tomato' }}>{erro}</p>}
 
-      <section>
-        <h3>Nova tarefa</h3>
-        <FormTarefa onSave={criar} />
-      </section>
-
-      {carregando && <p>Carregando…</p>}
-      {erro && <p style={{ color: 'tomato' }}>{erro}</p>}
-
-      <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: 8 }}>
-        {itens.map(t => (
-          <li key={t.id} style={{ border: '1px solid #ddd', padding: 12, borderRadius: 8 }}>
-            {editando?.id === t.id ? (
-              <FormTarefa inicial={t} onSave={atualizar} onCancel={() => setEditando(null)} />
-            ) : (
-              <>
-                <strong>{t.nome}</strong>
-                <p style={{ margin: '6px 0' }}>{t.descricao}</p>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button onClick={() => setEditando(t)}>Editar</button>
-                  <button onClick={() => excluir(t.id)}>Apagar</button>
-                </div>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-10/12 pb-10">
+            {itens.map(t => {
+              const emEdicao = editando?.id === t.id;
+              return (
+                <li
+                  key={t.id}
+                  className={`card-tarefas ${emEdicao ? 'em-edicao' : ''}`}
+                >
+                  
+                  {emEdicao ? (
+                    <div className="flex-1 overflow-auto card-scroll">
+                      <FormTarefa 
+                      inicial={t}
+                       onSave={atualizar} 
+                       onCancel={() => setEditando(null)}
+                       modo='edicao' />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex-1 overflow-hidden">
+                        <strong className="card-nome">{t.nome}</strong>
+                        <p className="card-descricao">
+                          {t.descricao}
+                        </p>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <button className="button-card" onClick={() => setEditando(t)}>
+                          <MdEdit />
+                        </button>
+                        <button className="button-card delete" onClick={() => excluir(t.id)}>
+                          <MdDelete />
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </>
   )
 }
