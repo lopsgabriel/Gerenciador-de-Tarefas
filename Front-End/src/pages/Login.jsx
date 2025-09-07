@@ -26,10 +26,24 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={aoEnviar}>
-      <input type="password" value={senha} onChange={e=>setSenha(e.target.value)} />
-      <button  type="submit">Entrar</button>
-      {erro && <p style={{color:'tomato'}}>{erro}</p>}
-    </form>
+    <div className='layout-root'>
+      <div className='layout-container'>
+        <span className='titulo-form'> Login </span>
+        <form 
+          onSubmit={aoEnviar} 
+          className='login-form'
+        >
+          <p className='Nome-tarefa-form text-center'> Insira a senha de acesso </p>
+          <input 
+          className='senha-input'
+          type="password" 
+          placeholder='Senha'
+          value={senha} 
+          onChange={e=>setSenha(e.target.value)} />
+          <button  type="submit" className='button'>Entrar</button>
+          {erro && <p style={{color:'tomato'}}>{erro}</p>}
+        </form>
+      </div>
+    </div>
   );
 }
