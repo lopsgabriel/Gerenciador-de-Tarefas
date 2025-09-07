@@ -8,39 +8,67 @@ import HeaderTarefas from '../components/HeaderTarefas';
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdSearch } from "react-icons/md";
+import Alert from '@mui/material/Alert';
 
 export default function Tarefas(){
   const dispatch = useDispatch();
   const { itens } = useSelector(e => e.tarefas);
   const [editando, setEditando] = useState(null);
   const [pesquisa, setPesquisa] = useState('');
+  const [erro, setErro] = useState(null);
+  const [visivel, setVisivel] = useState(false);
 
   const itensFiltrados = useMemo(() => {
-  const q = norm(pesquisa).trim();
-  if (!q) return itens; // 👉 sem pesquisa = retorna todos
-  const termos = q.split(/\s+/).filter(Boolean);
-  return itens.filter(t => {
-    const alvo = `${t.nome ?? ''} ${t.descricao ?? ''}`;
-    return termos.every(term => fuzzyMatch(term, alvo));
-  });
-}, [itens, pesquisa]);
+    const q = norm(pesquisa).trim();
+    if (!q) return itens;
+    const termos = q.split(/\s+/).filter(Boolean);
+    return itens.filter(t => {
+      const alvo = `${t.nome ?? ''} ${t.descricao ?? ''}`;
+      return termos.every(term => fuzzyMatch(term, alvo));
+    });
+  }, [itens, pesquisa]);
 
   useEffect(() => {
     dispatch(listarTarefas());
-  }, [dispatch]);
+    if (!visivel && erro){
+      const timer = setTimeout(() => setErro(null), 500);
+      return () => clearTimeout(timer);
+    }
+
+  }, [dispatch, visivel, erro]);
+
+  function avisoErro(err){
+    setErro(err.message || 'Erro inesperado');
+    setVisivel(true);
+    setTimeout(() => setVisivel(false), 4000);
+  }
 
   async function criar({nome, descricao}){
-    await dispatch(criarTarefa({nome, descricao}));
+    try{
+      await dispatch(criarTarefa({nome, descricao})).unwrap();
+    } catch (err){
+      avisoErro(err);
+    }
   }
 
   async function atualizar ({nome, descricao}){
     if(!editando) return;
-    await dispatch(atualizarTarefa({id: editando.id, nome, descricao}));
-    setEditando(null);
+    try{
+      await dispatch(atualizarTarefa({id: editando.id, nome, descricao})).unwrap();
+      setEditando(null);
+    } catch (err){
+      avisoErro(err);
+    }
   }
 
+
   async function excluir(id){
-    await dispatch(excluirTarefa(id));
+    try{
+      await dispatch(excluirTarefa(id)).unwrap();
+      await dispatch(listarTarefas());
+    } catch (err){
+      avisoErro(err);
+    }
   }
 
   return(
@@ -48,6 +76,13 @@ export default function Tarefas(){
       <HeaderTarefas logout={() => dispatch(logout())} />
       <div className='layout-root'>
         <div className='layout-container'>
+          <div className='w-full justify-end mr-5 flex relative' 
+            style={{ position: 'fixed', top: '5rem', 
+              opacity: visivel ? 1 : 0, transition: 'opacity 0.5s ease-in-out' 
+            }}
+          >
+            {erro && <Alert severity="error">{erro}</Alert>}
+          </div>
           <section className='layout-section'>
             <h3 className='form-title'>Nova tarefa</h3>
             <FormTarefa onSave={criar} />
