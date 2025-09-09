@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-const STORAGE_KEY = "todo_token";
+const STORAGE_KEY = "token";
 const bruto = localStorage.getItem(STORAGE_KEY);
 const token = bruto && bruto !== "undefined" ? bruto : null;
 
