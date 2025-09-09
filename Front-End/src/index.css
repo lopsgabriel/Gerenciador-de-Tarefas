@@ -32,6 +32,7 @@ button { font-family: var(--ff-sans); }
   display: inline-flex;
   align-items: center;
   gap: .5rem;
+  justify-content: center;
   border-radius: var(--radius);
   margin-bottom: 0.2rem;
   padding: 0.6em 1.2em;
@@ -41,6 +42,19 @@ button { font-family: var(--ff-sans); }
   transition: background-color .2s ease-in-out, box-shadow .2s ease-in-out;
 }
 
+.btn--expand {
+  border-radius: 50%;       /* círculo perfeito */
+  border: none;
+  padding: 0;               /* sem padding extra */
+  width: 3rem;              /* largura fixa */
+  height: 3rem;             /* altura igual à largura */
+  background: var(--clr-accent-50);
+  box-shadow: var(--shadow-sm);
+
+  display: flex;            /* centraliza ícone */
+  align-items: center;      
+  justify-content: center;
+}
 .btn--primary {
   background: var(--clr-primary);
   color: #fff;
@@ -105,6 +119,7 @@ button { font-family: var(--ff-sans); }
   width: 50%;
   padding: .5rem 0 .5rem 10px;
   background: rgba(255,252,243,0.856);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.136);
 }
 .input--password:focus { box-shadow: none; transition: all .6s ease-in-out; }
 
@@ -126,12 +141,14 @@ button { font-family: var(--ff-sans); }
   transition: all .2s ease-out;
   height: 12rem;
 }
+
+.card.expanded { height: 25rem; }
 .card--editing { height: 20rem; }
 
 .card__name {
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--clr-text);
+  color: #665a49;
   font-family: var(--ff-sans);
 }
 .card__desc {
@@ -144,6 +161,14 @@ button { font-family: var(--ff-sans); }
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   font-family: var(--ff-sans);
+}
+
+.desc-clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;    /* número de linhas antes de cortar */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;  /* adiciona "..." no final */
 }
 
 /* Scroll da área de edição */
@@ -206,7 +231,7 @@ button { font-family: var(--ff-sans); }
 }
 .login-form:hover {
   border-bottom-color: rgb(56 121 243);
-  box-shadow: 0 2px 3px 0 rgb(0 0 0 / 0.25);
+  box-shadow: 0 3px 4px 0 rgb(0 0 0 / 0.30);
   transition: all .6s ease-in-out;
 }
 .form-title {
