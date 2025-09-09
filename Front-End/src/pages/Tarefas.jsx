@@ -29,8 +29,14 @@ export default function Tarefas(){
 
   // Controle de expansão por item (guarda ids expandidos)
   const [expandidos, setExpandidos] = useState(() => new Set());
+  // Limite de caracteres para decidir se precisa expandir a tarefa
   const LIMITE = 80;
 
+  /**
+   * Filtra itens em memória usando fuzzyMatch:
+   * - Normaliza e quebra a query em termos.
+   * - Cada termo precisa casar com nome+descrição da tarefa.
+   */
   const itensFiltrados = useMemo(() => {
     const q = norm(pesquisa).trim();
     if (!q) return itens;
@@ -41,6 +47,10 @@ export default function Tarefas(){
     });
   }, [itens, pesquisa]);
 
+  /**
+   * Carrega lista inicial de tarefas
+   * e controla desaparecimento suave do alerta de erro.
+   */
   useEffect(() => {
     dispatch(listarTarefas());
     if (!visivel && erro){
@@ -50,12 +60,18 @@ export default function Tarefas(){
 
   }, [dispatch, visivel, erro, editando]);
 
+  /**
+   * Exibe erro padronizado no alerta, com timeout para esconder.
+   */
   function avisoErro(err){
     setErro(err.message || 'Erro inesperado');
     setVisivel(true);
     setTimeout(() => setVisivel(false), 4000);
   }
 
+  /**
+   * Cria nova tarefa → Redux thunk.
+   */
   async function criar({nome, descricao}){
     try{
       await dispatch(criarTarefa({nome, descricao})).unwrap();
@@ -63,7 +79,10 @@ export default function Tarefas(){
       avisoErro(err);
     }
   }
-
+  
+   /**
+   * Atualiza tarefa em edição → Redux thunk.
+   */
   async function atualizar ({nome, descricao}){
     if(!editando) return;
     try{
@@ -74,6 +93,10 @@ export default function Tarefas(){
     }
   }
 
+   /**
+   * Exclui tarefa → Redux thunk.
+   * Sempre revalida lista no finally.
+   */
   async function excluir(id){
     try{
       await dispatch(excluirTarefa(id)).unwrap();
@@ -84,6 +107,11 @@ export default function Tarefas(){
     }
   }
 
+   /**
+   * Helpers de expansão por card:
+   * - estaExpandido: verifica se o id está no Set
+   * - alternarExpandido: adiciona ou remove id do Set
+   */
   function estaExpandido(id){
     return expandidos.has(id);
   }
@@ -96,7 +124,11 @@ export default function Tarefas(){
       return novo;
     });
   }
-  
+
+  /**
+   * - Sempre que a lista de itens mudar, remove dos expandidos
+   *   os que não precisam mais expandir (descrição <= LIMITE).
+   */
   useEffect(() => {
     setExpandidos(prev => {
       const novo = new Set(prev);
@@ -112,15 +144,22 @@ export default function Tarefas(){
 
   return(
     <>
+    {/* Header com botão de logout */}
       <HeaderTarefas logout={() => dispatch(logout())} />
       <div className='layout-root'>
         <div className='layout-container'>
           <ErroAlerta visivel={visivel} mensagem={erro} />
+          
+          {/* Form de criação */}
           <section className='layout-section'>
             <h3 className='form-title'>Nova tarefa</h3>
             <FormTarefa onSave={criar} />
           </section>
+
+          {/* Barra de pesquisa */}
           <BarraPesquisa onChange={setPesquisa} />
+
+          {/* Grid de cards */}
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-10/12 pb-10">
             {itensFiltrados.map(t => {
               const emEdicao = editando?.id === t.id;
