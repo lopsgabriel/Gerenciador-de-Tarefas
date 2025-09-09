@@ -9,17 +9,27 @@ import TarefaCard from '../components/TarefaCard';
 import BarraPesquisa from '../components/BarraPesquisa';
 import ErroAlerta from '../components/ErroAlerta';
 
+/**
+ * Página: Tarefas
+ * - Orquestra a listagem, criação, edição e remoção de tarefas.
+ * - Integra com Redux para buscar e mutar dados.
+ * - Implementa pesquisa com "fuzzy match" e expansão por card.
+ * - Exibe feedback de erro via alerta temporizado.
+ */
 export default function Tarefas(){
   const dispatch = useDispatch();
+
+  // Lista de tarefas vem do Redux
   const { itens } = useSelector(e => e.tarefas);
+
   const [editando, setEditando] = useState(null);
   const [pesquisa, setPesquisa] = useState('');
   const [erro, setErro] = useState(null);
   const [visivel, setVisivel] = useState(false);
 
-
+  // Controle de expansão por item (guarda ids expandidos)
   const [expandidos, setExpandidos] = useState(() => new Set());
-  const LIMITE = 140;
+  const LIMITE = 80;
 
   const itensFiltrados = useMemo(() => {
     const q = norm(pesquisa).trim();
@@ -38,7 +48,7 @@ export default function Tarefas(){
       return () => clearTimeout(timer);
     }
 
-  }, [dispatch, visivel, erro]);
+  }, [dispatch, visivel, erro, editando]);
 
   function avisoErro(err){
     setErro(err.message || 'Erro inesperado');
@@ -77,7 +87,7 @@ export default function Tarefas(){
   function estaExpandido(id){
     return expandidos.has(id);
   }
-  
+
   function alternarExpandido(id){
     setExpandidos(prev => {
       const novo = new Set(prev);
@@ -86,6 +96,19 @@ export default function Tarefas(){
       return novo;
     });
   }
+  
+  useEffect(() => {
+    setExpandidos(prev => {
+      const novo = new Set(prev);
+      itens.forEach( t => {
+        const precisaExpandir = (t?.descricao?.length ?? 0) > LIMITE;
+        if (!precisaExpandir && novo.has(t.id)){
+          novo.delete(t.id)
+        }
+      })
+      return novo
+    })
+  }, [itens, LIMITE])
 
   return(
     <>
