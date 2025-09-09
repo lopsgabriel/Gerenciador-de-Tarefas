@@ -22,7 +22,7 @@ Aplicação **Full-Stack** (Node.js + React/Vite) para gerenciar tarefas com aut
 ```env
 PORTA=7000
 ORIGEM=http://localhost:5173
-JWT_SECRET=escolha-um-segredo-seguro
+JWT_SECRET=escolha-uma-senha-segura
 APP_PASSWORD=defina-uma-senha-de-acesso
 ```
 
