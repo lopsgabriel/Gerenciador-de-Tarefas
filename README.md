@@ -62,6 +62,8 @@ npm run dev
 ```
 Front rodará em: **http://localhost:5173**
 
+**Lembre de criar os dois arquivos .env (um em "servidor/.env" e outro em "Front-End/.env") e colocar as respectivas senhas em cada um deles**
+
 > Use a senha definida em `APP_PASSWORD` no servidor para login.
 
 ## 🧪 Testes
