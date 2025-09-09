@@ -8,6 +8,8 @@ import HeaderTarefas from '../components/HeaderTarefas';
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdSearch } from "react-icons/md";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { MdOutlineExpandLess } from "react-icons/md";
 import Alert from '@mui/material/Alert';
 
 export default function Tarefas(){
@@ -17,6 +19,10 @@ export default function Tarefas(){
   const [pesquisa, setPesquisa] = useState('');
   const [erro, setErro] = useState(null);
   const [visivel, setVisivel] = useState(false);
+
+
+  const [expandidos, setExpandidos] = useState(() => new Set());
+  const LIMITE = 140;
 
   const itensFiltrados = useMemo(() => {
     const q = norm(pesquisa).trim();
@@ -61,14 +67,26 @@ export default function Tarefas(){
     }
   }
 
-
   async function excluir(id){
     try{
       await dispatch(excluirTarefa(id)).unwrap();
+    } catch {
+      // igonore
+    } finally {
       await dispatch(listarTarefas());
-    } catch (err){
-      avisoErro(err);
     }
+  }
+
+  function estaExpandido(id){
+    return expandidos.has(id);
+  }
+  function alternarExpandido(id){
+    setExpandidos(prev => {
+      const novo = new Set(prev);
+      if (novo.has(id)) novo.delete(id);
+      else novo.add(id);
+      return novo;
+    });
   }
 
   return(
@@ -99,10 +117,12 @@ export default function Tarefas(){
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-10/12 pb-10">
             {itensFiltrados.map(t => {
               const emEdicao = editando?.id === t.id;
+              const precisaExpandir = (t?.descricao?.length ?? 0) > LIMITE;
+              const expandido = estaExpandido(t.id)
               return (
                 <li
                   key={t.id}
-                  className={`card ${emEdicao ? 'card--editing' : ''}`}
+                  className={`card ${emEdicao ? 'card--editing' : ''} ${expandido ? 'expanded' : ''}`}
                 >
                   {emEdicao ? (
                     <div className="flex-1 overflow-auto card-scroll">
@@ -114,19 +134,34 @@ export default function Tarefas(){
                     </div>
                   ) : (
                     <>
-                      <div className="flex-1 overflow-hidden">
-                        <strong className="card__name">{t.nome}</strong>
-                        <p className="card_desc">
+                      <div className={`flex-1 ${expandido ? 'overflow-auto card-scroll' : 'overflow-hidden'}`}>
+                        <h1 className="card__name">{t.nome}</h1>
+                        <p className={expandido ? 'desc-full' : 'desc-clamped'}>
                           {t.descricao}
                         </p>
                       </div>
-                      <div className="mt-3 flex gap-2">
-                        <button className="btn btn--card" onClick={() => setEditando(t)}>
-                          <MdEdit />
-                        </button>
-                        <button className="btn btn--card is-danger" onClick={() => excluir(t.id)}>
-                          <MdDelete />
-                        </button>
+                      <div className='flex justify-between'>
+                        <div className="mt-3 flex gap-2">
+                          <button className="btn btn--card" onClick={() => setEditando(t)}>
+                            <MdEdit />
+                          </button>
+                          <button className="btn btn--card is-danger" onClick={() => excluir(t.id)}>
+                            <MdDelete />
+                          </button>
+                        </div>
+                        {precisaExpandir && (
+                          <button
+                            className="btn btn--expand"
+                            onClick={() => alternarExpandido(t.id)}
+                            aria-expanded={expandido}
+                            aria-label={expandido ? 'Recolher descrição' : 'Expandir descrição'}
+                          >
+                            {expandido
+                              ? <MdOutlineExpandLess size={25} />
+                              : <MdOutlineExpandMore size={25} />
+                            }
+                          </button>
+                        )}
                       </div>
                     </>
                   )}
