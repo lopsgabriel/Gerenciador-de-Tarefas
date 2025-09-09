@@ -1,3 +1,8 @@
+/**
+ * Normaliza uma string para facilitar comparações.
+ * - Converte para minúsculas.
+ * - Remove acentos/diacríticos (ex.: "ação" → "acao").
+ */
 export function norm(s = '') {
   return s
     .toLowerCase()
@@ -5,16 +10,25 @@ export function norm(s = '') {
     .replace(/\p{Diacritic}/gu, '');
 }
 
+/**
+ * Calcula a distância de Levenshtein entre duas strings.
+ * - Mede o número mínimo de operações (inserção, deleção, substituição)
+ *   para transformar uma string na outra.
+ * - Usado para permitir correspondências aproximadas (fuzzy).
+ */
 function levenshtein(a = '', b = '') {
   const m = a.length, n = b.length;
-  if (!m) return n; if (!n) return m;
+  if (!m) return n;
+  if (!n) return m;
+
   const dp = Array.from({ length: m + 1 }, (_, i) => [i]);
   for (let j = 1; j <= n; j++) dp[0][j] = j;
+
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
       dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,                  
-        dp[i][j - 1] + 1,                  
+        dp[i - 1][j] + 1,                 
+        dp[i][j - 1] + 1,                 
         dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1) 
       );
     }
@@ -22,12 +36,27 @@ function levenshtein(a = '', b = '') {
   return dp[m][n];
 }
 
+/**
+ * Verifica se um termo corresponde a um texto de forma aproximada.
+ * - Normaliza ambos (minusculas, sem acentos).
+ * - Retorna true se:
+ *    - termo vazio
+ *    - termo contido exatamente no texto
+ *    - termo aparece em alguma "janela" do texto com distância de Levenshtein ≤ limiar
+ * - O limiar depende do tamanho do termo:
+ *    - até 4 letras: 1
+ *    - até 7 letras: 2
+ *    - acima: 3
+ */
 export function fuzzyMatch(term, text) {
   const t = norm(term);
   const s = norm(text);
-  if (!t) return true;
-  if (s.includes(t)) return true; 
+  if (!t) return true;           
+  if (s.includes(t)) return true; // match exato
+
   const limiar = t.length <= 4 ? 1 : t.length <= 7 ? 2 : 3;
+
+  // percorre "janelas" no texto do mesmo tamanho do termo
   for (let i = 0; i <= Math.max(0, s.length - t.length); i++) {
     const janela = s.slice(i, i + t.length);
     if (levenshtein(t, janela) <= limiar) return true;

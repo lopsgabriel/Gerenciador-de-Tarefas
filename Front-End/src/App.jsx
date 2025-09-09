@@ -3,11 +3,35 @@ import Tarefas from './pages/Tarefas';
 import Login from './pages/Login';
 import ProtectedRouter from './routes/AppRouter';
 
-export default function App(){
-  return(
+/**
+ * Componente: App
+ * -------------------------------------------------------
+ * Define o roteamento principal da aplicação.
+ *
+ * Rotas:
+ * - /login → página pública de autenticação.
+ * - / (raiz) → página de tarefas, protegida por ProtectedRouter.
+ *
+ * Notas:
+ * - ProtectedRouter garante que apenas usuários autenticados
+ *   possam acessar a lista de tarefas.
+ * - Caso contrário, redireciona para /login.
+ */
+export default function App() {
+  return (
     <Routes>
-      <Route path='/login' element={<Login />} />
-      <Route path='/' element={<ProtectedRouter><Tarefas /></ProtectedRouter>} />
+      {/* Rota de login (pública) */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Rota raiz protegida → só renderiza Tarefas se autenticado */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRouter>
+            <Tarefas />
+          </ProtectedRouter>
+        }
+      />
     </Routes>
-  )
+  );
 }
